@@ -1,13 +1,17 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { 
+  Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, 
+  CssBaseline, AppBar, Toolbar, Typography, Button, Avatar, Chip, Fade
+} from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import PaymentIcon from '@mui/icons-material/Payment';
 import HomeIcon from '@mui/icons-material/Home';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import LogoutIcon from '@mui/icons-material/Logout';
 import useAuth from '../hooks/useAuth';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const SocioLayout = () => {
     const navigate = useNavigate();
@@ -19,49 +23,131 @@ const SocioLayout = () => {
     }
 
     const menuItems = [
-        { text: 'Inicio', icon: <HomeIcon />, path: '/socio' },
-        { text: 'Generar Rutina con IA', icon: <SmartToyIcon />, path: '/socio/generar-rutina' },
-        { text: 'Mis Rutinas', icon: <FitnessCenterIcon />, path: '/socio/rutinas' },
-        { text: 'Pagar Membresía', icon: <PaymentIcon />, path: '/socio/pagar' },
+        { text: 'Inicio', icon: <HomeIcon />, path: '/socio', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+        { text: 'Generar Rutina con IA', icon: <SmartToyIcon />, path: '/socio/generar-rutina', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+        { text: 'Mis Rutinas', icon: <FitnessCenterIcon />, path: '/socio/rutinas', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
+        { text: 'Pagar Membresía', icon: <PaymentIcon />, path: '/socio/pagar', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
     ];
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
             <CssBaseline />
-            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                <Toolbar>
-                    <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                        Gimnasio AI - Bienvenido, {auth.nombre}
-                    </Typography>
-                    <Button color="inherit" onClick={handleLogout}>Cerrar Sesión</Button>
+            <AppBar 
+                position="fixed" 
+                sx={{ 
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                    backdropFilter: 'blur(20px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                }}
+            >
+                <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Avatar 
+                            sx={{ 
+                                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                                width: 40,
+                                height: 40,
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            {auth.nombre?.charAt(0) || 'S'}
+                        </Avatar>
+                        <Box>
+                            <Typography variant="h6" component="div" sx={{ fontWeight: 700, color: '#1e293b' }}>
+                                aiGym - ¡Hola, {auth.nombre}!
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#64748b' }}>
+                                Tu entrenamiento personalizado te espera
+                            </Typography>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Chip 
+                            label="Socio" 
+                            size="small" 
+                            sx={{ 
+                                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                                color: 'white',
+                                fontWeight: 600
+                            }} 
+                        />
+                        <Button 
+                            color="inherit" 
+                            onClick={handleLogout}
+                            startIcon={<LogoutIcon />}
+                            sx={{ 
+                                color: '#64748b',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                    color: '#dc2626'
+                                }
+                            }}
+                        >
+                            Cerrar Sesión
+                        </Button>
+                    </Box>
                 </Toolbar>
             </AppBar>
+            
             <Drawer
                 variant="permanent"
                 sx={{
                     width: drawerWidth,
                     flexShrink: 0,
-                    [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                    [`& .MuiDrawer-paper`]: { 
+                        width: drawerWidth, 
+                        boxSizing: 'border-box',
+                        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+                    },
                 }}
             >
                 <Toolbar />
-                <Box sx={{ overflow: 'auto' }}>
-                    <List>
-                        {menuItems.map((item) => (
-                            <ListItem key={item.text} disablePadding>
-                                <ListItemButton onClick={() => navigate(item.path)}>
-                                    <ListItemIcon>{item.icon}</ListItemIcon>
-                                    <ListItemText primary={item.text} />
-                                </ListItemButton>
-                            </ListItem>
+                <Box sx={{ overflow: 'auto', pt: 2 }}>
+                    <List sx={{ px: 2 }}>
+                        {menuItems.map((item, index) => (
+                            <Fade in={true} timeout={300 + index * 100} key={item.text}>
+                                <ListItem disablePadding sx={{ mb: 1 }}>
+                                    <ListItemButton 
+                                        onClick={() => navigate(item.path)}
+                                        sx={{
+                                            borderRadius: 3,
+                                            py: 1.5,
+                                            px: 2,
+                                            '&:hover': {
+                                                background: item.gradient,
+                                                '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                                                    color: 'white',
+                                                },
+                                                transform: 'translateX(8px) scale(1.02)',
+                                            },
+                                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                        }}
+                                    >
+                                        <ListItemIcon sx={{ minWidth: 40, color: '#64748b' }}>
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText 
+                                            primary={item.text} 
+                                            primaryTypographyProps={{
+                                                fontWeight: 600,
+                                                fontSize: '0.95rem'
+                                            }}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            </Fade>
                         ))}
                     </List>
                 </Box>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            
+            <Box component="main" sx={{ flexGrow: 1, p: 4, backgroundColor: '#f8fafc' }}>
                 <Toolbar />
-                {/* Aquí se renderizará el contenido de la página del socio */}
-                <Outlet />
+                <Fade in={true} timeout={500}>
+                    <Box>
+                        <Outlet />
+                    </Box>
+                </Fade>
             </Box>
         </Box>
     );
